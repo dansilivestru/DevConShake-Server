@@ -7,77 +7,70 @@
                 </head>
 		<body>
             <script type="text/javascript">
-                var min = {
+                var _min = {
                     x: 0,
-                    y: 0,
-                    z: 0
+                    y: 0
                 },
-                max = {
+                _max = {
                     x: 0,
-                    y: 0,
-                    z: 0
+                    y: 0
                 },
-                old = {
+                _old = {
                     x: 0,
-                    y: 0,
-                    z: 0
+                    y: 0
                 },
-                maxDelta = {
+                _maxDelta = {
                     x: 0,
-                    y: 0,
-                    z: 0
-                };
-                options = { frequency: 50 };
+                    y: 0
+                },
+                _options = { frequency: 150 };
                 
                 function onSuccess(accel) {
                     var delta = {
-                            x: Math.abs(old.x - accel.x),
-                            y: Math.abs(old.y - accel.y),
-                            z: Math.abs(old.z - accel.z),
+                            x: Math.abs(_old.x - accel.x),
+                            y: Math.abs(_old.y - accel.y),
                         },
                         ratio = {
                             x: 0,
                             y: 0,
-                            z: 0
-                        }
+                        };
 
-                    old.x = accel.x;
-                    old.y = accel.y;
-                    old.z = accel.z;
+                    _old.x = accel.x;
+                    _old.y = accel.y;
 
-                    maxDelta = {
-                        x: maxDelta.x < Math.abs(max.x - accel.x) ? Math.abs(max.x - accel.x) : maxDelta.x,
-                        y: maxDelta.y < Math.abs(max.y - accel.y) ? Math.abs(max.y - accel.y) : maxDelta.y,
-                        z: maxDelta.z < Math.abs(max.z - accel.z) ? Math.abs(max.z - accel.z) : maxDelta.z,
+                    _maxDelta = {
+                        x: _maxDelta.x < Math.abs(_max.x - accel.x) ? Math.abs(_max.x - accel.x) : _max.x,
+                        y: _maxDelta.y < Math.abs(_max.y - accel.y) ? Math.abs(_max.y - accel.y) : _max.y,
                     };
 
-                    max.x = (max.x < accel.x) ? accel.x : max.x;
-                    max.y = (max.y < accel.y) ? accel.y : max.y;
-                    max.z = (max.z < accel.z) ? accel.z : max.z;
-                    min.x = (min.x > accel.x) ? accel.x : min.x;
-                    min.y = (min.y > accel.y) ? accel.y : min.y;
-                    min.z = (min.z > accel.z) ? accel.z : min.z;
+                    _max.x = (_max.x < accel.x) ? accel.x : _max.x;
+                    _max.y = (_max.y < accel.y) ? accel.y : _max.y;
+                    _min.x = (_min.x > accel.x) ? accel.x : _min.x;
+                    _min.y = (_min.y > accel.y) ? accel.y : _min.y;
 
-                    ratio.x = delta.x / (max.x - min.x);
-                    ratio.y = delta.y / (max.y - min.y);
-                    ratio.z = delta.z / (max.z - min.z);
+                    ratio.x = delta.x / (_max.x - _min.x) || 0;
+                    ratio.y = delta.y / (_max.y - _min.y) || 0;
 
-                    var color = 255 * ratio.x;
-                    color = 255 >= color ? color : 255;
-                    document.body.setAttribute("style", "background: #00" + parseInt(color, 10).toString(16) + "00");
-
-                    document.getElementById("max").innerText = "max = x: " + max.x + " | y: " + max.y + " | z: " + max.z;
-                    document.getElementById("min").innerText = "min = x: " + min.x + " | y: " + min.y + " | z: " + min.z;
-                    document.getElementById("delta").innerText = "x: " + maxDelta.x + " | y: " + maxDelta.y + " | z: " + maxDelta.z;
-                    document.getElementById("ratio").innerText = "ratio: " + ratio.x;
+                    document.body.setAttribute("style", "background: #" + getColor(ratio.x) + getColor(ratio.y) + "ff");
                 }
+
+                function getColor(ratio) {
+                    var color = 255 * ratio,
+                        hexColor;
+
+                    color = parseInt(255 >= color ? color : 255);
+                    hexColor = color < 16 ? "0" + color.toString(16) : color.toString(16);
+                    
+                    return hexColor;
+                }
+
                 
                 function onError() {
                     alert('onError!');
-                };
+                }
                 
                 function onDeviceReady() {
-                    navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
+                    navigator.accelerometer.watchAcceleration(onSuccess, onError, _options);
                 }
                 
                 window.addEventListener("load", function () {
@@ -86,13 +79,7 @@
 
                 </script>
 			<div>
-                <h2>Min Max values</h2>
-				<p id="max"></p>
-				<p id="min"></p>
-                <h2>delta</h2>
-                <p id="delta"></p>
-                <h2>ratio</h2>
-                <p id="ratio"></p>
+                <img src="images/logo.png" \>
 			</div>
 		</body>
 	</head>
