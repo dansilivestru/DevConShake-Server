@@ -1,0 +1,99 @@
+<html>
+	<head>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+            <meta charset="utf-8">
+                <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+                </head>
+		<body>
+            <script type="text/javascript">
+                var min = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                max = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                old = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                maxDelta = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                };
+                options = { frequency: 50 };
+                
+                function onSuccess(accel) {
+                    var delta = {
+                            x: Math.abs(old.x - accel.x),
+                            y: Math.abs(old.y - accel.y),
+                            z: Math.abs(old.z - accel.z),
+                        },
+                        ratio = {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        }
+
+                    old.x = accel.x;
+                    old.y = accel.y;
+                    old.z = accel.z;
+
+                    maxDelta = {
+                        x: maxDelta.x < Math.abs(max.x - accel.x) ? Math.abs(max.x - accel.x) : maxDelta.x,
+                        y: maxDelta.y < Math.abs(max.y - accel.y) ? Math.abs(max.y - accel.y) : maxDelta.y,
+                        z: maxDelta.z < Math.abs(max.z - accel.z) ? Math.abs(max.z - accel.z) : maxDelta.z,
+                    };
+
+                    max.x = (max.x < accel.x) ? accel.x : max.x;
+                    max.y = (max.y < accel.y) ? accel.y : max.y;
+                    max.z = (max.z < accel.z) ? accel.z : max.z;
+                    min.x = (min.x > accel.x) ? accel.x : min.x;
+                    min.y = (min.y > accel.y) ? accel.y : min.y;
+                    min.z = (min.z > accel.z) ? accel.z : min.z;
+
+                    ratio.x = delta.x / (max.x - min.x);
+                    ratio.y = delta.y / (max.y - min.y);
+                    ratio.z = delta.z / (max.z - min.z);
+
+                    var color = 255 * ratio.x;
+                    color = 255 >= color ? color : 255;
+                    document.body.setAttribute("style", "background: #00" + parseInt(color, 10).toString(16) + "00");
+
+                    document.getElementById("max").innerText = "max = x: " + max.x + " | y: " + max.y + " | z: " + max.z;
+                    document.getElementById("min").innerText = "min = x: " + min.x + " | y: " + min.y + " | z: " + min.z;
+                    document.getElementById("delta").innerText = "x: " + maxDelta.x + " | y: " + maxDelta.y + " | z: " + maxDelta.z;
+                    document.getElementById("ratio").innerText = "ratio: " + ratio.x;
+                }
+                
+                function onError() {
+                    alert('onError!');
+                };
+                
+                function onDeviceReady() {
+                    navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
+                }
+                
+                window.addEventListener("load", function () {
+                    document.addEventListener("deviceready", onDeviceReady, false);
+                });
+
+                </script>
+			<div>
+                <h2>Min Max values</h2>
+				<p id="max"></p>
+				<p id="min"></p>
+                <h2>delta</h2>
+                <p id="delta"></p>
+                <h2>ratio</h2>
+                <p id="ratio"></p>
+			</div>
+		</body>
+	</head>
+</html>
