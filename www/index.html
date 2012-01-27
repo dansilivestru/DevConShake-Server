@@ -76,7 +76,7 @@
                 
                 window.addEventListener("load", function () {
                     document.addEventListener("deviceready", onDeviceReady, false);
-                    document.body.style.height = window.screen.height;
+                    document.getElementById("content").setAttribute("style", "height: " + window.screen.height + ";");
                     alert(window.screen.height);
                 });
 
