@@ -59,9 +59,8 @@
                     else {
                         _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
                     }
-                    console.log(_shakeValue);
 
-                    document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff");
+                    document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff; ");
                 }
 
                 function getColor(ratio) {
@@ -85,7 +84,7 @@
                 
                 window.addEventListener("load", function () {
                     document.addEventListener("deviceready", onDeviceReady, false);
-                    document.getElementById("content").style.height = window.screen.height;
+                    document.getElementById("content").setAttribute("style", "height: " + window.screen.height + "px;");
                 });
 
                 </script>
