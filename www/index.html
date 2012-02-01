@@ -24,7 +24,8 @@
                     x: 0,
                     y: 0
                 },
-                _options = { frequency: 50 };
+                _options = { frequency: 100 },
+                _shakeValue = 0;
                 
                 function onSuccess(accel) {
                     var delta = {
@@ -52,7 +53,15 @@
                     ratio.x = delta.x / (_max.x - _min.x) || 0;
                     ratio.y = delta.y / (_max.y - _min.y) || 0;
 
-                    document.body.setAttribute("style", "background: #" + getColor(ratio.x) + getColor(ratio.y) + "ff");
+                    if (ratio.x > 0.3 || ratio.y > 0.3) {
+                        _shakeValue = (_shakeValue <= 1) ? _shakeValue + 0.1 :  1;
+                    }
+                    else {
+                        _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
+                    }
+                    console.log(_shakeValue);
+
+                    document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff");
                 }
 
                 function getColor(ratio) {
@@ -76,8 +85,7 @@
                 
                 window.addEventListener("load", function () {
                     document.addEventListener("deviceready", onDeviceReady, false);
-                    document.getElementById("content").setAttribute("style", "height: " + window.screen.height + ";");
-                    alert(window.screen.height);
+                    //document.getElementById("content").setAttribute("style", "height: " + window.screen.height + ";");
                 });
 
                 </script>
