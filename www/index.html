@@ -61,6 +61,8 @@
                 _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
             }
 
+            _shakeValue = Math.round(_shakeValue * 10) / 10;
+
             document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff; ");
         }
 
@@ -75,8 +77,8 @@
         }
 
         
-        function onError() {
-            alert('onError!');
+        function onError(e) {
+            alert('onError!' + e);
         }
         
         function onDeviceReady() {
