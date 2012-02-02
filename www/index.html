@@ -54,11 +54,13 @@
                     ratio.y = delta.y / (_max.y - _min.y) || 0;
 
                     if (ratio.x > 0.3 || ratio.y > 0.3) {
-                        _shakeValue = (_shakeValue <= 1) ? _shakeValue + 0.1 :  1;
+                        _shakeValue = (_shakeValue < 1) ? _shakeValue + 0.1 :  1;
                     }
                     else {
                         _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
                     }
+
+                    _shakeValue = Math.round(_shakeValue * 10) / 10;
 
                     document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff; ");
                 }
@@ -74,8 +76,8 @@
                 }
 
                 
-                function onError() {
-                    alert('onError!');
+                function onError(e) {
+                    alert('onError! ' + e);
                 }
                 
                 function onDeviceReady() {
