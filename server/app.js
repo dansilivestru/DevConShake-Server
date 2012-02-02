@@ -28,9 +28,11 @@ io.sockets.on('connection', function(socket) {
   totalClients++;
   console.log('Connection, total clients: ' + totalClients);
 
-  socket.on('message', function(msg) {
-    console.log('got a msg: ' + msg);
-    // TODO: read a shake value
+  socket.on('shake', function(data) {
+    console.log('got a shake msg: ' + data);
+    var s = data.value;
+    totalShake += s;
+    console.log('Shake is at ' + totalShake);
   });
 
   socket.on('disconnect', function() {
