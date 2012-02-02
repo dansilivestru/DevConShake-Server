@@ -1,96 +1,97 @@
+<!DOCTYPE html>
 <html>
 	<head>
-        <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-            <meta charset="utf-8">
-                <link rel="stylesheet" href="styles/styles.css" />
-                <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
-                </head>
-		<body>
-            <script type="text/javascript">
-                var _min = {
-                    x: 0,
-                    y: 0
+    <title>DevCon Shake!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles/styles.css" />
+    <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+        var _min = {
+            x: 0,
+            y: 0
+        },
+        _max = {
+            x: 0,
+            y: 0
+        },
+        _old = {
+            x: 0,
+            y: 0
+        },
+        _maxDelta = {
+            x: 0,
+            y: 0
+        },
+        _options = { frequency: 100 },
+        _shakeValue = 0;
+        
+        function onSuccess(accel) {
+            var delta = {
+                    x: Math.abs(_old.x - accel.x),
+                    y: Math.abs(_old.y - accel.y),
                 },
-                _max = {
+                ratio = {
                     x: 0,
-                    y: 0
-                },
-                _old = {
-                    x: 0,
-                    y: 0
-                },
-                _maxDelta = {
-                    x: 0,
-                    y: 0
-                },
-                _options = { frequency: 100 },
-                _shakeValue = 0;
-                
-                function onSuccess(accel) {
-                    var delta = {
-                            x: Math.abs(_old.x - accel.x),
-                            y: Math.abs(_old.y - accel.y),
-                        },
-                        ratio = {
-                            x: 0,
-                            y: 0,
-                        };
+                    y: 0,
+                };
 
-                    _old.x = accel.x;
-                    _old.y = accel.y;
+            _old.x = accel.x;
+            _old.y = accel.y;
 
-                    _maxDelta = {
-                        x: _maxDelta.x < Math.abs(_max.x - accel.x) ? Math.abs(_max.x - accel.x) : _max.x,
-                        y: _maxDelta.y < Math.abs(_max.y - accel.y) ? Math.abs(_max.y - accel.y) : _max.y,
-                    };
+            _maxDelta = {
+                x: _maxDelta.x < Math.abs(_max.x - accel.x) ? Math.abs(_max.x - accel.x) : _max.x,
+                y: _maxDelta.y < Math.abs(_max.y - accel.y) ? Math.abs(_max.y - accel.y) : _max.y,
+            };
 
-                    _max.x = (_max.x < accel.x) ? accel.x : _max.x;
-                    _max.y = (_max.y < accel.y) ? accel.y : _max.y;
-                    _min.x = (_min.x > accel.x) ? accel.x : _min.x;
-                    _min.y = (_min.y > accel.y) ? accel.y : _min.y;
+            _max.x = (_max.x < accel.x) ? accel.x : _max.x;
+            _max.y = (_max.y < accel.y) ? accel.y : _max.y;
+            _min.x = (_min.x > accel.x) ? accel.x : _min.x;
+            _min.y = (_min.y > accel.y) ? accel.y : _min.y;
 
-                    ratio.x = delta.x / (_max.x - _min.x) || 0;
-                    ratio.y = delta.y / (_max.y - _min.y) || 0;
+            ratio.x = delta.x / (_max.x - _min.x) || 0;
+            ratio.y = delta.y / (_max.y - _min.y) || 0;
 
-                    if (ratio.x > 0.3 || ratio.y > 0.3) {
-                        _shakeValue = (_shakeValue <= 1) ? _shakeValue + 0.1 :  1;
-                    }
-                    else {
-                        _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
-                    }
+            if (ratio.x > 0.3 || ratio.y > 0.3) {
+                _shakeValue = (_shakeValue <= 1) ? _shakeValue + 0.1 :  1;
+            }
+            else {
+                _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
+            }
 
-                    document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff; ");
-                }
+            document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff; ");
+        }
 
-                function getColor(ratio) {
-                    var color = 255 * ratio,
-                        hexColor;
+        function getColor(ratio) {
+            var color = 255 * ratio,
+                hexColor;
 
-                    color = parseInt(255 >= color ? color : 255);
-                    hexColor = color < 16 ? "0" + color.toString(16) : color.toString(16);
-                    
-                    return hexColor;
-                }
+            color = parseInt(255 >= color ? color : 255);
+            hexColor = color < 16 ? "0" + color.toString(16) : color.toString(16);
+            
+            return hexColor;
+        }
 
-                
-                function onError() {
-                    alert('onError!');
-                }
-                
-                function onDeviceReady() {
-                    navigator.accelerometer.watchAcceleration(onSuccess, onError, _options);
-                }
-                
-                window.addEventListener("load", function () {
-                    document.addEventListener("deviceready", onDeviceReady, false);
-                    document.getElementById("content").setAttribute("style", "height: " + window.screen.height + "px;");
-                });
+        
+        function onError() {
+            alert('onError!');
+        }
+        
+        function onDeviceReady() {
+            navigator.accelerometer.watchAcceleration(onSuccess, onError, _options);
+        }
+        
+        window.addEventListener("load", function () {
+            document.getElementById("content").setAttribute("style", "height: " + window.screen.height + "px;");
+        });
 
-                </script>
-			<div id="content" class="content">
-                <img src="images/logo.jpg" \>
-			</div>
-		</body>
-	</head>
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+    </script>
+    <div id="content" class="content">
+      <img src="images/logo.jpg" alt="logo" />
+    </div>
+  </body>
 </html>
