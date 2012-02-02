@@ -1,0 +1,11 @@
+{
+  "name": "DevConShake",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "2.5.2",
+    "socket.io": "0.8.7"
+  },
+  "scripts": {
+    "start": "app.js"
+  }
+}
