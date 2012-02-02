@@ -2,6 +2,8 @@ var express = require('express');
 
 var app = module.exports = express.createServer();
 
+var io = require('socket.io').listen(app);
+
 // Express Configuration
 
 app.configure(function(){
@@ -19,19 +21,27 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-var totalShake = 0;
+var totalShake = 0,
+    totalClients = 0;
+
+io.sockets.on('connection', function(socket) {
+  totalClients++;
+  console.log('Connection, total clients: ' + totalClients);
+
+  socket.on('message', function(msg) {
+    console.log('got a msg: ' + msg);
+    // TODO: read a shake value
+  });
+
+  socket.on('disconnect', function() {
+    totalClients--;
+    console.log('Disconnect, total clients: ' + totalClients);
+  });
+  
+});
 
 app.get('/', function(req, res) {
-  var shake = req.query.shake;
-  if (shake) {
-    var val = parseInt(shake);
-    if (!isNaN(val)) {
-      totalShake += val;
-      console.log('Server shake value: ' + totalShake);
-      res.send('{success:true}');
-    }
-  }
-  res.send('{success:false}');
+  // TODO: Dashboard
 });
 
 app.listen(3000);
