@@ -10,6 +10,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.methodOverride());
+  app.use(express.static(__dirname + '/static'));
   app.use(app.router);
 });
 
@@ -29,7 +30,6 @@ io.sockets.on('connection', function(socket) {
   console.log('Connection, total clients: ' + totalClients);
 
   socket.on('shake', function(data) {
-    console.log('got a shake msg: ' + data);
     var s = data.value;
     totalShake += s;
     console.log('Shake is at ' + totalShake);
@@ -39,12 +39,14 @@ io.sockets.on('connection', function(socket) {
     totalClients--;
     console.log('Disconnect, total clients: ' + totalClients);
   });
-  
 });
 
-app.get('/', function(req, res) {
-  // TODO: Dashboard
-});
+// Broadcast an update for the dashboard every second, and add a decay to the total shake.
+setInterval(function() {
+  totalShake -= 0.2;
+  if (totalShake < 0) totalShake = 0;
+  io.sockets.emit('dashboard', {value:totalShake});
+}, 1000);
 
 app.listen(3000);
 

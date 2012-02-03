@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DevCon Shake Dashboard, yo</title>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      var url = 'http://10.0.1.4:3000/';
+      var bar = null;
+
+      function setup() {
+        bar = document.getElementById('bar');
+
+        var socket = io.connect(url);
+        socket.on('dashboard', function(data) {
+            console.log('got msg');
+          var s = Math.ceil(parseInt(data.value));
+          var txt = new Array(s).join('|');
+          bar.innerHTML = txt;
+        });
+      }
+    </script>
+    <style>
+      #bar {
+        width: 100%;
+        border:2px solid black;
+        background-color: black;
+        color: white;
+      }
+    </style>
+  </head>
+  <body onload="setup();">
+    <h1>hey</h1>
+    <div id="bar"></div>
+  </body>
+</html>
