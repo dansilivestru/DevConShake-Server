@@ -62,15 +62,16 @@
             ratio.y = delta.y / (_max.y - _min.y) || 0;
 
             if (ratio.x > 0.3 || ratio.y > 0.3) {
-                _shakeValue = (_shakeValue <= 1) ? _shakeValue + 0.1 :  1;
+                _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
             }
             else {
-                _shakeValue = (_shakeValue > 0) ? _shakeValue - 0.1 :  0;
+                _shakeValue = (_shakeValue > 1) ? _shakeValue + 0.1 :  1;
             }
 
             _shakeValue = Math.round(_shakeValue * 10) / 10;
 
-            document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff; ");
+            document.getElementById("content").style.backgroundColor = "    rgba(0,0,0," + _shakeValue + ")";
+            //document.body.setAttribute("style", "background: #" + getColor(_shakeValue) + getColor(_shakeValue) + "ff; ");
         }
 
         function getColor(ratio) {
@@ -106,7 +107,6 @@
 
     </script>
     <div id="content" class="content">
-      <img src="images/logo.jpg" alt="logo" />
     </div>
   </body>
 </html>

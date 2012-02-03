@@ -1,3 +1,11 @@
+body {
+    background-image: url("../images/shake.jpg");
+    background-position: center middle;
+    background-size: 100%, auto;
+    background-repeat: no-repeat;
+    margin: 0px;
+}
+
 .content {
     width 100%;
     height: 100%;
