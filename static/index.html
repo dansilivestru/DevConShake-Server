@@ -31,6 +31,10 @@
         socket.emit('get');
       }
 
+      function onYouTubePlayerReady(playerid) {
+        var player = document.getElementById('myytplayer');
+        player.playVideo();
+      }
 
     </script>
     <style>
