@@ -22,7 +22,7 @@
             var params = { allowScriptAccess: "always" };
             var atts = { id: "myytplayer" };
             swfobject.embedSWF("http://www.youtube.com/v/oHg5SJYRHA0?enablejsapi=1&playerapiid=ytplayer&version=3",
-                               "ytapiplayer", "425", "356", "8", null, null, params, atts);
+                               "ytapiplayer", "" + screen.width, "" + screen.height, "8", null, null, params, atts);
 
           }
           var txt = new Array(shake).join('|');
@@ -43,6 +43,12 @@
         border:2px solid black;
         background-color: black;
         color: white;
+      }
+      object {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 99;
       }
     </style>
   </head>
