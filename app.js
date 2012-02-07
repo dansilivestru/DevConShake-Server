@@ -42,13 +42,16 @@ io.sockets.on('connection', function(socket) {
 });
 
 // Broadcast an update for the dashboard every second, and add a decay to the total shake.
+// TODO: dont broadcast if shake value hasnt changed
 setInterval(function() {
   totalShake -= 0.2;
   if (totalShake < 0) totalShake = 0;
   io.sockets.emit('dashboard', {value:totalShake});
 }, 1000);
 
-app.listen(3000);
+var port = process.env.PORT || 3000;
 
-console.log('Listening at localhost:3000');
+app.listen(port);
+
+console.log('Listening on port ' + port);
 console.log('Server shake value starts at 0.');
