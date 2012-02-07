@@ -8,6 +8,7 @@
       var url = 'http://gentle-warrior-7480.herokuapp.com/';
       var bar = null;
       var rickroll = false;
+      var threshold = 10;
 
       function setup() {
         bar = document.getElementById('bar');
@@ -16,14 +17,13 @@
         socket.on('dashboard', function(data) {
           var shake = Math.ceil(parseFloat(data.value));
           console.log('Got update from server: ' + shake);
-          if (shake >= 10 && !rickroll) {
+          if (shake >= threshold && !rickroll) {
             console.log('rickrolling baby');
             rickroll = true;
             var params = { allowScriptAccess: "always" };
             var atts = { id: "myytplayer" };
             swfobject.embedSWF("http://www.youtube.com/v/oHg5SJYRHA0?enablejsapi=1&playerapiid=ytplayer&version=3",
                                "ytapiplayer", "" + screen.width, "" + screen.height, "8", null, null, params, atts);
-
           }
           var txt = new Array(shake).join('|');
           bar.innerHTML = txt;

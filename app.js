@@ -24,6 +24,7 @@ app.configure('production', function(){
 
 var totalShake = 0,
     lastShake = 0,
+    threshold = 10,
     totalClients = 0;
 
 // Handle socket (client) connection
@@ -59,6 +60,9 @@ setInterval(function() {
   if (Math.floor(lastShake) != Math.floor(totalShake)) {
     lastShake = totalShake;
     io.sockets.emit('dashboard', {value:totalShake});
+    if (totalShake >= threshold) {
+      io.sockets.emit('booya');
+    }
   }
 }, 1000);
 
