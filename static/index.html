@@ -12,11 +12,12 @@
 
         var socket = io.connect(url);
         socket.on('dashboard', function(data) {
-            console.log('got msg');
-          var s = Math.ceil(parseInt(data.value));
+          var shake = Math.ceil(parseFloat(data.value));
+          console.log('Got update from server: ' + shake);
           var txt = new Array(s).join('|');
           bar.innerHTML = txt;
         });
+        socket.emit('get');
       }
     </script>
     <style>

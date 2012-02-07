@@ -23,16 +23,25 @@ app.configure('production', function(){
 });
 
 var totalShake = 0,
+    lastShake = 0,
     totalClients = 0;
 
+// Handle socket (client) connection
 io.sockets.on('connection', function(socket) {
   totalClients++;
   console.log('Connection, total clients: ' + totalClients);
 
+  // Handset client will emit "shake" events
   socket.on('shake', function(data) {
     var s = data.value;
     totalShake += s;
     console.log('Shake is at ' + totalShake);
+  });
+
+  // Webpage client will emit "get" event to get
+  // latest shake reading on initial load
+  socket.on('get', function() {
+    io.sockets.emit('dashboard', {value:totalShake});
   });
 
   socket.on('disconnect', function() {
@@ -41,12 +50,16 @@ io.sockets.on('connection', function(socket) {
   });
 });
 
-// Broadcast an update for the dashboard every second, and add a decay to the total shake.
-// TODO: dont broadcast if shake value hasnt changed
+// Broadcast an update for the dashboard every second if
+// the shake value has changed by a whole number
+// also add a decay to the total shake.
 setInterval(function() {
   totalShake -= 0.2;
   if (totalShake < 0) totalShake = 0;
-  io.sockets.emit('dashboard', {value:totalShake});
+  if (Math.floor(lastShake) != Math.floor(totalShake)) {
+    lastShake = totalShake;
+    io.sockets.emit('dashboard', {value:totalShake});
+  }
 }, 1000);
 
 var port = process.env.PORT || 3000;
