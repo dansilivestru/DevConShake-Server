@@ -3,9 +3,11 @@
   <head>
     <title>DevCon Shake Dashboard, yo</title>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="swfobject.js"></script>    
     <script type="text/javascript">
       var url = 'http://gentle-warrior-7480.herokuapp.com/';
       var bar = null;
+      var rickroll = false;
 
       function setup() {
         bar = document.getElementById('bar');
@@ -14,11 +16,22 @@
         socket.on('dashboard', function(data) {
           var shake = Math.ceil(parseFloat(data.value));
           console.log('Got update from server: ' + shake);
+          if (shake >= 10 && !rickroll) {
+            console.log('rickrolling baby');
+            rickroll = true;
+            var params = { allowScriptAccess: "always" };
+            var atts = { id: "myytplayer" };
+            swfobject.embedSWF("http://www.youtube.com/v/oHg5SJYRHA0?enablejsapi=1&playerapiid=ytplayer&version=3",
+                               "ytapiplayer", "425", "356", "8", null, null, params, atts);
+
+          }
           var txt = new Array(shake).join('|');
           bar.innerHTML = txt;
         });
         socket.emit('get');
       }
+
+
     </script>
     <style>
       #bar {
@@ -32,5 +45,7 @@
   <body onload="setup();">
     <h1>hey</h1>
     <div id="bar"></div>
+    <div id="ytapiplayer">
+    </div>
   </body>
 </html>
