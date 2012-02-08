@@ -42,6 +42,7 @@ io.sockets.on('connection', function(socket) {
   // Webpage client will emit "get" event to get
   // latest shake reading on initial load
   socket.on('get', function() {
+    totalShake = 0;
     io.sockets.emit('dashboard', {value:totalShake});
   });
 
