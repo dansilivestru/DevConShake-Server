@@ -39,6 +39,17 @@
 
     </script>
     <style>
+      @font-face {
+          font-family: 'MolotRegular';
+          src: url('Molot-webfont.eot');
+          src: url('Molot-webfont.eot?#iefix') format('embedded-opentype'),
+               url('Molot-webfont.woff') format('woff'),
+               url('Molot-webfont.ttf') format('truetype'),
+               url('Molot-webfont.svg#MolotRegular') format('svg');
+          font-weight: normal;
+          font-style: normal;
+
+      }
       object {
         position: absolute;
         top: 0;
@@ -50,10 +61,19 @@
         text-align:center;
         width: 50%;
       }
+      h1, h2 {
+        text-align:center;
+        margin: 50px 0;
+        color: black;
+        font: 60px/68px 'MolotRegular', Arial, sans-serif;letter-spacing: 0;
+      }
+      h2 {
+        font-size: 40px;
+      }
     </style>
   </head>
   <body onload="setup();">
-    <h1>hey</h1>
+    <h1>DevCon Shake Dashboard</h1>
     <div id="holder">
       <div class="ui-progress-bar ui-container transition" id="progress_bar">
         <div id="progress" class="ui-progress" style="width: 0%; ">
@@ -61,6 +81,7 @@
         </div>
       </div>
     </div>
+    <h2>Shake it if you've got it!</h2>
     <div id="ytapiplayer">
     </div>
   </body>
