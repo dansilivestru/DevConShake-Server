@@ -3,12 +3,13 @@
   <head>
     <title>DevCon Shake Dashboard, yo</title>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="swfobject.js"></script>    
+    <script type="text/javascript" src="swfobject.js"></script>
+    <link media="screen" rel="stylesheet" type="text/css" href="ui-progress-bar.css" />
     <script type="text/javascript">
       var url = 'http://gentle-warrior-7480.herokuapp.com/';
       var bar = null;
       var rickroll = false;
-      var threshold = 10;
+      var threshold = 50;
 
       function setup() {
         bar = document.getElementById('bar');
@@ -25,8 +26,8 @@
             swfobject.embedSWF("http://www.youtube.com/v/oHg5SJYRHA0?enablejsapi=1&playerapiid=ytplayer&version=3",
                                "ytapiplayer", "" + screen.width, "" + screen.height, "8", null, null, params, atts);
           }
-          var txt = new Array(shake).join('|');
-          bar.innerHTML = txt;
+          var percent = (shake/threshold)*100;
+          document.getElementById('progress').style.width = percent + '%';
         });
         socket.emit('get');
       }
@@ -38,23 +39,28 @@
 
     </script>
     <style>
-      #bar {
-        width: 100%;
-        border:2px solid black;
-        background-color: black;
-        color: white;
-      }
       object {
         position: absolute;
         top: 0;
         left: 0;
         z-index: 99;
       }
+      #holder {
+        margin: 0 auto;
+        text-align:center;
+        width: 50%;
+      }
     </style>
   </head>
   <body onload="setup();">
     <h1>hey</h1>
-    <div id="bar"></div>
+    <div id="holder">
+      <div class="ui-progress-bar ui-container transition" id="progress_bar">
+        <div id="progress" class="ui-progress" style="width: 0%; ">
+          <span class="ui-label" style="display: none; ">Completed</span>
+        </div>
+      </div>
+    </div>
     <div id="ytapiplayer">
     </div>
   </body>

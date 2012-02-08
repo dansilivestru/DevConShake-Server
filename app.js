@@ -24,7 +24,7 @@ app.configure('production', function(){
 
 var totalShake = 0,
     lastShake = 0,
-    threshold = 10,
+    threshold = 50,
     totalClients = 0;
 
 // Handle socket (client) connection
@@ -39,8 +39,8 @@ io.sockets.on('connection', function(socket) {
     console.log('Shake is at ' + totalShake);
   });
 
-  // Webpage client will emit "get" event to get
-  // latest shake reading on initial load
+  // Webpage client will emit "get" event on load
+  // reset shake to 0
   socket.on('get', function() {
     totalShake = 0;
     io.sockets.emit('dashboard', {value:totalShake});
