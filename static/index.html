@@ -16,6 +16,16 @@
 
         var socket = io.connect(url);
         socket.on('dashboard', function(data) {
+          // update the list of connected peeps
+          var $peeps = document.getElementById('peeps');
+          $peeps.innerHTML = '';
+          for (var i = 0, l = data.peeps.length; i < l; i++) {
+            var $li = document.createElement('li');
+            $li.innerHTML = data.peeps[i];
+            $peeps.appendChild($li)
+          }
+          
+          // handle shake
           var shake = Math.ceil(parseFloat(data.value));
           console.log('Got update from server: ' + shake);
           if (shake >= threshold && !rickroll) {
@@ -73,6 +83,15 @@
       h2 {
         font-size: 40px;
       }
+      ul {
+        font-family: 'MolotRegular', Arial, sans-serif;
+        font-size: 24px;
+        padding: 0px;
+        text-align: center;
+      }
+      ul li {
+        list-style: none;
+      }
     </style>
   </head>
   <body onload="setup();">
@@ -85,7 +104,7 @@
       </div>
     </div>
     <h2>Shake it if you've got it!</h2>
-    <div id="ytapiplayer">
-    </div>
+    <ul id="peeps"></ul>
+    <div id="ytapiplayer"></div>
   </body>
 </html>
