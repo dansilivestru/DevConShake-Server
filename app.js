@@ -23,7 +23,6 @@ app.configure('production', function(){
 });
 
 var totalShake = 0,
-    lastShake = 0,
     threshold = 50,
     totalClients = 0,
     peeps = {};
@@ -43,25 +42,29 @@ app.get('/reset', function(req, res) {
   res.send('reset shake to 0');
 });
 
+function dropNickAfterDelay(n) {
+  peeps[n] = setTimeout(function() {
+    console.log('user ' + n + ' timed out');
+    clearTimeout(peeps[n]);
+    delete peeps[n];
+  }, 10000);
+}
+
 // Handle socket (client) connection
 io.sockets.on('connection', function(socket) {
   totalClients++;
   console.log('Connection, total clients: ' + totalClients);
 
-  function dropNickAfterDelay(nick) {
-    peeps[nick] = setTimeout(function() {
-      console.log('user ' + nick + ' timed out');
-      delete peeps[nick];
-    }, 10000);
-  }
-
   // Handset client will emit "shake" events
   socket.on('shake', function(data) {
     var s = data.value;
     var nick = data.nick;
-    clearTimeout(peeps[nick]);
-    dropNickAfterDelay(nick);
-    totalShake += s;
+    if (s !== 0) {
+        clearTimeout(peeps[nick]);
+        delete peeps[nick];
+        dropNickAfterDelay(nick);
+        totalShake += s;
+    }
     console.log('Shake is at ' + totalShake);
   });
 
@@ -71,6 +74,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('nick', function(nick) {
+    console.log('Setting up ' + nick);
     dropNickAfterDelay(nick);
   });
 
@@ -86,12 +90,9 @@ io.sockets.on('connection', function(socket) {
 setInterval(function() {
   totalShake -= 0.2;
   if (totalShake < 0) totalShake = 0;
-  if (Math.floor(lastShake) != Math.floor(totalShake)) {
-    lastShake = totalShake;
-    io.sockets.emit('dashboard', {value:totalShake,peeps:outputPeeps(peeps)});
-    if (totalShake >= threshold) {
-      io.sockets.emit('booya');
-    }
+  io.sockets.emit('dashboard', {value:totalShake,peeps:outputPeeps(peeps)});
+  if (totalShake >= threshold) {
+    io.sockets.emit('booya');
   }
 }, 1000);
 
