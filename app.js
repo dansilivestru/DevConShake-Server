@@ -25,25 +25,53 @@ app.configure('production', function(){
 var totalShake = 0,
     lastShake = 0,
     threshold = 50,
-    totalClients = 0;
+    totalClients = 0,
+    peeps = {};
+
+function outputPeeps(p) {
+    var a = [];
+    for (var i in p) {
+        if (p.hasOwnProperty(i)) {
+            a.push(i);
+        }
+    }
+    return a;
+}
+
+app.get('/reset', function(req, res) {
+  totalShake = 0;
+  res.send('reset shake to 0');
+});
 
 // Handle socket (client) connection
 io.sockets.on('connection', function(socket) {
   totalClients++;
   console.log('Connection, total clients: ' + totalClients);
 
+  function dropNickAfterDelay(nick) {
+    peeps[nick] = setTimeout(function() {
+      console.log('user ' + nick + ' timed out');
+      delete peeps[nick];
+    }, 10000);
+  }
+
   // Handset client will emit "shake" events
   socket.on('shake', function(data) {
     var s = data.value;
+    var nick = data.nick;
+    clearTimeout(peeps[nick]);
+    dropNickAfterDelay(nick);
     totalShake += s;
     console.log('Shake is at ' + totalShake);
   });
 
   // Webpage client will emit "get" event on load
-  // reset shake to 0
   socket.on('get', function() {
-    totalShake = 0;
-    io.sockets.emit('dashboard', {value:totalShake});
+    io.sockets.emit('dashboard', {value:totalShake, peeps:outputPeeps(peeps)});
+  });
+
+  socket.on('nick', function(nick) {
+    dropNickAfterDelay(nick);
   });
 
   socket.on('disconnect', function() {
@@ -60,7 +88,7 @@ setInterval(function() {
   if (totalShake < 0) totalShake = 0;
   if (Math.floor(lastShake) != Math.floor(totalShake)) {
     lastShake = totalShake;
-    io.sockets.emit('dashboard', {value:totalShake});
+    io.sockets.emit('dashboard', {value:totalShake,peeps:outputPeeps(peeps)});
     if (totalShake >= threshold) {
       io.sockets.emit('booya');
     }
